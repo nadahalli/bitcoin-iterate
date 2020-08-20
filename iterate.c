@@ -524,6 +524,9 @@ static void print_format(const char *format,
 			case 'N':
 				printf("%zu", i - t->input);
 				break;
+			case 'H':
+				printf("%u", b->height);
+				break;
 			case 'X':
 				dump_tx_input(i);
 				break;
@@ -540,6 +543,14 @@ static void print_format(const char *format,
 				if (txnum != 0) {
 					struct utxo *utxo = utxo_map_get(utxo_map, i->hash);
 					printf("%u", utxo->height);
+				} else
+					printf("0");
+				break;
+			case 'L':
+				/* Coinbase doesn't have valid input. */
+				if (txnum != 0) {
+					struct utxo *utxo = utxo_map_get(utxo_map, i->hash);
+					printf("%u", b->height - utxo->height);
 				} else
 					printf("0");
 				break;
@@ -879,7 +890,9 @@ int main(int argc, char *argv[])
 			   "  %iq: input nSequence\n"
 			   "  %iN: input number\n"
 			   "  %iX: input in hex\n"
+			   "  %bH: block height\n"
 			   "  %iB: input UTXO block number (0 for coinbase)\n"
+			   "  %iL: UTXO lifespan in blocks\n"
 			   "  %iT: input UTXO transaction number (-1 for coinbase)\n"
 			   "  %ip: input payment guess: same ("
 			    stringify(CHANGE_OUTPUT) ") or different ("
@@ -1206,7 +1219,7 @@ check_genesis:
 				print_format(txfmt, &utxo_map, b, &tx[i], i,
 					     NULL, NULL, NULL);
 
-			if (!start && inputfmt) {
+			if (!start && inputfmt && i != 0) {
 				for (j = 0; j < tx[i].input_count; j++) {
 					print_format(inputfmt, &utxo_map, b,
 						     &tx[i], i, &tx[i].input[j],

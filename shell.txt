@@ -1,7 +1,0 @@
-./bitcoin-iterate -q --input=%iB,%iL > ./spent.csv;
-~/go/bin/bitcoin-utxo-dump -f height -o ./utxodump.csv;
-cat ./utxodump.csv | sed 1D > ./utxodump.csv.bk;
-mv ./utxodump.csv.bk ./utxodump.csv;
-cat ./utxodump.csv | awk -v OFS=',' {'print $1, -1'} > ./unspent.csv;
-cat ./unspent.csv ./spent.csv | sort -T="," -k1 -n > sorted.spent.unspent.csv;
-cat ./sorted.spent.unspent.csv | python3 stacked.py;

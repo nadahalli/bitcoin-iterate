@@ -7,18 +7,18 @@ import time
 
 max_block = 644276
 gap = 144 * 7
+max_labels = 20
 
 X = []
 Ys = defaultdict(list)
-labels = set([])
 gap_ys = defaultdict(int)
 
 for line in sys.stdin:
     block, life = map(int, line.split(','))
     if block % gap == 0 and new_block:
         new_block = False
-        for key, value in gap_ys.items():
-            Ys[key].append(value)
+        for label in range(0, max_labels):
+            Ys[label].append(gap_ys.get(label, 0))
         gap_ys.clear()
         X.append(block - gap)
         print(time.asctime(), block - gap)
@@ -26,7 +26,6 @@ for line in sys.stdin:
         new_block = True
 
     bucket = math.floor(math.log(life + 2, 2))
-    labels.add(bucket)
     gap_ys[bucket] += 1
 
 for key, value in sorted(Ys.items()):
@@ -44,7 +43,7 @@ with open('values.pkl', 'wb') as f:
     pickle.dump(Y, f)    
 
 fig, ax = plt.subplots()
-ax.stackplot(X, *Y, labels=sorted(labels))
+ax.stackplot(X, *Y, labels=[i for i in range(0, max_labels)])
 ax.legend(loc='upper left')
     
 box = ax.get_position()

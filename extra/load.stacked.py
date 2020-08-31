@@ -27,9 +27,15 @@ for i, x in enumerate(X):
     sum = 0
     sum_compress = 0
     for j, y in enumerate(Y):
-        sum += y[i]
-        if j in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]:
-            sum_compress += y[i]/(gap/pow(2, j))
+        if args.compress:
+            if j in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]:
+                sum_compress += y[i]/(gap/pow(2, j))
+                sum += y[i]/(gap/pow(2, j))
+            else:
+                sum += y[i]
+
+        else:
+            sum += y[i]
 
     compression_done = False
     for j, y in enumerate(Y):

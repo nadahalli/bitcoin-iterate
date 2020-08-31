@@ -13,8 +13,7 @@ for i, x in enumerate(X):
     for j, y in enumerate(Y):
         sum += y[i]
     for j, y in enumerate(Y):
-        #pY[j].append(100.0 * y[i]/sum)
-        pY[j].append(y[i])
+        pY[j].append(100.0 * y[i]/sum)
 
 nY = []
 for key, value in sorted(pY.items()):

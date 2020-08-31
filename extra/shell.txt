@@ -1,10 +1,7 @@
-./bitcoin-iterate -q --input=%iB,%iL > ./spent.csv;
-~/go/bin/bitcoin-utxo-dump -f height -o ./utxodump.csv;
-cat ./utxodump.csv | sed 1D > ./utxodump.csv.bk;
-mv ./utxodump.csv.bk ./utxodump.csv;
-cat ./utxodump.csv | awk -v OFS=',' {'print $1, -1'} > ./unspent.csv;
+./bitcoin-iterate -q --input=%iB,%iL,%ia,%iT > ./spent.csv;
+bitcoin-utxo-dump -f "height,amount,coinbase" -o ./utxodump.csv;
+cat ./utxodump.csv | sed 1D | awk -F ',' {'printf "%s,-1,%s,%s\n",$1,$2,($3==0)?1:0'} > ./unspent.csv;
 cat ./unspent.csv ./spent.csv | sort -t "," -k1 -n > sorted.spent.unspent.csv;
-cat ./sorted.spent.unspent.csv | python3 stacked.py;
 
 wget "https://api.coindesk.com/v1/bpi/historical/close.json?start=2010-07-17&end=2020-08-10" -O coindesk.txt
 ./bitcoin-iterate -q --block='%bs,%bN' > ts.to.heights.csv

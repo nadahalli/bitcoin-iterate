@@ -5,3 +5,9 @@ mv ./utxodump.csv.bk ./utxodump.csv;
 cat ./utxodump.csv | awk -v OFS=',' {'print $1, -1'} > ./unspent.csv;
 cat ./unspent.csv ./spent.csv | sort -T="," -k1 -n > sorted.spent.unspent.csv;
 cat ./sorted.spent.unspent.csv | python3 stacked.py;
+
+wget "https://api.coindesk.com/v1/bpi/historical/close.json?start=2010-07-17&end=2020-08-10" -O coindesk.txt
+./bitcoin-iterate -q --block='%bs,%bN' > ts.to.heights.csv
+python3 extras/merge.ts.height.price.py > label.to.price.csv
+
+
